@@ -23,12 +23,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt  # Устанавливаем зависимости, включая flake8 и pytest
+        pip install -r project/src/requirements.txt  # Устанавливаем зависимости, включая flake8 и pytest
 
     - name: Run flake8
       run: |
-        flake8 .  # Запускаем flake8 для проверки кода
+        flake8 project/src/ project/test/  # Запускаем flake8 для проверки кода
 
     - name: Run tests with pytest
       run: |
-        pytest  # Запускаем pytest для проверки тестов
+        pytest project/test/ # Запускаем pytest для проверки тестов
