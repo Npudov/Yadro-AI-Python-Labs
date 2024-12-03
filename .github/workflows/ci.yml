@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # Запускать при пуше в ветку main
+      - project4-6
   pull_request:
     branches:
       - main  # Запускать при открытии pull request'а в ветку main
@@ -25,10 +26,11 @@ jobs:
       run: |
         pip install -r project/src/requirements.txt  # Устанавливаем зависимости, включая flake8 и pytest
 
-    - name: Run flake8
-      run: |
-        flake8 project/src/ project/test/  # Запускаем flake8 для проверки кода
 
     - name: Run tests with pytest
       run: |
         pytest project/test/ # Запускаем pytest для проверки тестов
+
+    - name: Run flake8
+      run: |
+        flake8 project/src/ project/test/ --config=project/flake8/.flake8  # Запускаем flake8 для проверки кода
