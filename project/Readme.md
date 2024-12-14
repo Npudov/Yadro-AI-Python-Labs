@@ -14,3 +14,12 @@
 
 В Task 3 для запуска из корня проекта вызовите команды: ```docker-compose build``` 
 и ```docker-compose up -d```
+
+## Task 4
+В Task 4 для запуска тестов выполните команду из корня проекта```pytest```
+
+## Task 5
+В Task 5 написан github CI и добавлен статический анализатор flake8
+
+## Task 6
+В Task 6 добавлен sqlalchemy и адаптирован docker-compose для подключения к базе данных Postgres

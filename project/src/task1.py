@@ -12,16 +12,21 @@ def substructure_search(molecule_list, substructure_smiles):
     Returns:
         list: Список строк молекул в формате SMILES, содержащие субструктуру.
     """
+    if not molecule_list:
+        raise ValueError("Molecule list cannot be empty")
+
+    if not substructure_smiles.strip():
+        raise ValueError("Substructure SMILES cannot be empty")
 
     substructure = Chem.MolFromSmiles(substructure_smiles)
 
+    if substructure is None:
+        raise ValueError("Invalid substructure SMILES")
 
     matching_molecules = []
 
     for smiles in molecule_list:
-
         molecule = Chem.MolFromSmiles(smiles)
-
         if molecule and molecule.HasSubstructMatch(substructure):
             matching_molecules.append(smiles)
 

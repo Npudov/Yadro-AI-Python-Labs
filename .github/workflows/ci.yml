@@ -1,0 +1,36 @@
+name: YADRO-CI
+
+on:
+  push:
+    branches:
+      - main  # Запускать при пуше в ветку main
+      - project4-6
+  pull_request:
+    branches:
+      - main  # Запускать при открытии pull request'а в ветку main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install -r project/src/requirements.txt  # Устанавливаем зависимости, включая flake8 и pytest
+
+
+    - name: Run tests with pytest
+      run: |
+        pytest project/test/ # Запускаем pytest для проверки тестов
+
+    - name: Run flake8
+      run: |
+        flake8 project/src/ project/test/ --config=project/flake8/.flake8  # Запускаем flake8 для проверки кода

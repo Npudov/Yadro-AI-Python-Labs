@@ -2,3 +2,6 @@ rdkit
 fastapi
 uvicorn
 pillow
+pytest
+flake8
+sqlalchemy
