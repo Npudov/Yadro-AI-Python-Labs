@@ -98,7 +98,7 @@ def list_molecules(skip: int = 0, limit: int = 10) -> Iterator[dict]:
 
     logger.info(f"Returned {min(limit, len(molecules) - skip)} molecules.")
 
-    #return [{"id": mol_id, "smiles": smiles} for mol_id, smiles in molecules.items()]
+    # return [{"id": mol_id, "smiles": smiles} for mol_id, smiles in molecules.items()]
 
 
 # API: Поиск по подструктуре
