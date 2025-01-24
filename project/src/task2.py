@@ -1,6 +1,8 @@
 import json
 from typing import Iterator
 
+from celery.result import AsyncResult
+from tasks import substructure_search_task
 from redis.asyncio import Redis
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -20,6 +22,11 @@ app = FastAPI()
 
 # Хранилище молекул (в оперативной памяти)
 molecules = {}
+
+
+# Модель для запроса поиска
+class SearchRequest(BaseModel):
+    substructure_smiles: str
 
 
 # Модель данных для молекулы
@@ -85,7 +92,7 @@ def delete_molecule(molecule_id: int):
 
 
 # API: Получение всех молекул
-@app.get("/list")
+@app.get("/list", response_model=None)
 def list_molecules(skip: int = 0, limit: int = 10) -> Iterator[dict]:
     logger.info(f"Listing molecules with skip={skip} and limit={limit}")
 
@@ -102,7 +109,7 @@ def list_molecules(skip: int = 0, limit: int = 10) -> Iterator[dict]:
 
 
 # API: Поиск по подструктуре
-@app.get("/search")
+'''@app.get("/search")
 async def substructure_search(substructure_smiles: str):
     logger.info(f"Substructure search requested for: {substructure_smiles}")
     # Ключ для кэша
@@ -130,7 +137,42 @@ async def substructure_search(substructure_smiles: str):
     logger.info(f"Found {len(results)} matching molecules.")
     # Сохраняем результат в кэш
     await redis_client.setex(cache_key, 60, json.dumps(results))  # Кэшируем на 60 секунд
-    return results
+    return results'''
+
+
+# Эндпоинт для запуска задачи поиска
+@app.post("/search/start")
+async def start_search(request: SearchRequest):
+    # Получаем список SMILES из хранилища
+    molecule_list = list(molecules.values())
+
+    # Запускаем задачу Celery
+    task = substructure_search_task.delay(molecule_list, request.substructure_smiles)
+    logger.info(f"Started search task with ID: {task.id}")
+    return {"task_id": task.id}
+
+
+# Эндпоинт для проверки статуса задачи и получения результатов
+@app.get("/search/status/{task_id}")
+async def get_search_status(task_id: str):
+    task_result = AsyncResult(task_id)
+
+    if task_result.state == 'PENDING':
+        logger.info(f"Task {task_id} is still processing")
+        return {"status": "Task is still processing"}
+    elif task_result.state == 'SUCCESS':
+        logger.info(f"Task {task_id} completed successfully")
+        # Формируем результат
+        matching_molecules = task_result.result
+        results = [
+            {"id": mol_id, "smiles": smiles}
+            for mol_id, smiles in molecules.items()
+            if smiles in matching_molecules
+        ]
+        return {"status": "Task completed", "result": results}
+    else:
+        logger.error(f"Task {task_id} failed with state: {task_result.state}")
+        return {"status": task_result.state, "error": str(task_result.result)}
 
 
 # [Optional] API: Загрузка файла с молекулами
