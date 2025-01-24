@@ -1,16 +1,14 @@
-import json
+import logging
+from os import getenv
 from typing import Iterator
 
 from celery.result import AsyncResult
-from tasks import substructure_search_task
-from redis.asyncio import Redis
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from rdkit import Chem
-from os import getenv
+from redis.asyncio import Redis
 
-import task1
-import logging
+from tasks import substructure_search_task
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
