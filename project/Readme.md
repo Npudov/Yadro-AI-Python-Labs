@@ -29,3 +29,6 @@
 
 ## Task 8
 В Task 8 интегрирован Redis для кэширования
+
+## Task 9
+В Task 9 добавлен Celery

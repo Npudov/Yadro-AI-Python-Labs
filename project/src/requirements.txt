@@ -6,3 +6,4 @@ pytest
 flake8
 sqlalchemy
 redis
+celery[redis]
