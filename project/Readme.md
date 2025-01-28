@@ -23,3 +23,9 @@
 
 ## Task 6
 В Task 6 добавлен sqlalchemy и адаптирован docker-compose для подключения к базе данных Postgres
+
+## Task 7
+В Task 7 добавлено логирование в API методы и добавлен итератор для метода substructure_search
+
+## Task 8
+В Task 8 интегрирован Redis для кэширования

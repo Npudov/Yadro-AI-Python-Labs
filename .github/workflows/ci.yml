@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main  # Запускать при пуше в ветку main
-      - project4-6
   pull_request:
     branches:
       - main  # Запускать при открытии pull request'а в ветку main
